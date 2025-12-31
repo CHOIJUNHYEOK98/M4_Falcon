@@ -5,6 +5,7 @@ This code is an implementation of the paper titled [**"Optimized Falcon Verify o
 ## Optimization strategy
 
 We apply signed Plantard multiplication to the NTT in Falcon Verify.
+
 The detailed optimization strategys are as follow:
 * Packing two coefficients per register
 * Using Plantard multiplication instead Montgomery multiplication
@@ -18,6 +19,7 @@ The detailed optimization strategys are as follow:
 ## Benchmark
 
 We use the [**pqm4**](https://github.com/mupq/pqm4) framwork to measure the performance of the **Verify** function, and **STM32CubeIDE** to measure the performance of NTT.
+
 The benchmark settings in STM32CubeIDE are as follow:
 * Frequency : 20MHz (same as **pqm4**)
 * Compile option : -O3
