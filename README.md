@@ -1,6 +1,6 @@
 # Optimized Implementation of Falcon Verify on Cortex-M4
 
-This code is an implementation of the paper titled [**"Optimized Falcon Verify on Cortex-M4 for Post-Quantum Secure UAV Communication"**](https://www.sciencedirect.com/science/article/pii/S2405959524001401).
+This code is an implementation of the paper titled [**"Optimized Falcon Verify on Cortex-M4 for Post-Quantum Secure UAV Communications"**](https://www.sciencedirect.com/science/article/pii/S2405959524001401).
 
 ## Optimization strategy
 
