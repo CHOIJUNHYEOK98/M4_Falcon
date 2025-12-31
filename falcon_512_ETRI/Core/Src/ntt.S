@@ -4,70 +4,6 @@
 .cpu cortex-m4
 .thumb
 
-.global barrett_fast
-.type barrett_fast, %function
-barrett_fast:
-	push	{r4-r11,r14}
-	//감산을 원하는 a는 r0으로 들어왔다고 가정,  a = #0x7148 = 29000
-	movw	r3,	#0xcca8		//barrett const 1
-	movt	r3,	#0xfffc		//barrett const 1
-	movw	r4,	#0x8000		//barrett const 2
-	movw	r5, #0x3001		//falcon q
-
-	smlawb	r1,r3,r0,r4
-	smlabt	r0,r5,r1,r0
-	pop		{r4-r11,pc}
-
-//입력으로 a와 b가 들어와서 c=a+b를 출력하는 함수?
-.global add_basic
-.type add_basic, %function
-add_basic:
-	push	{r4-r11,r14}
-	add 	r0,r0,r1
-	pop		{r4-r11,pc}
-
-.global instruction_test
-.type instruction_test, %function
-instruction_test:
-	push	{r4-r11,r14}
-	movw	r2, #0xaac8		//barrett const 1
-	movt	r2, #0xfffa		//barrett const 1
-	movw	r3,	0x8000		//barrett const 2
-	movw	r4, 0x7148		//a_b
-	movt	r4, 0x5fb4		//a_t
-	movw	r5, 0x3001		//falcon q
-
-	smlawb	r6, r2, r4, r3
-	smlabt	r6, r5, r6, r4
-	mov 	r0, r6
-	//smlawt	r7, r2, r4, r3
-	//smulbt	r7, r5, r7
-	//add		r7, r4, r7, lsl#16
-	//pkhbt	r0, r6, r7
-	pop		{r4-r11,pc}
-
-
-.global instruction_test2
-.type instruction_test2, %function
-instruction_test2:
-	push	{r4-r11,r14}
-	movw	r2, #0x5049		//barrett const 1
-	movt	r2, #0xffec		//barrett const 1
-	movw	r3,	0x8000		//barrett const 2
-	movw	r4, 0x7148		//a_b
-	movt	r4, 0x5fb4		//a_t
-	movw	r5, 0xd01		//kyber q
-
-	smlawb	r6, r2, r4, r3
-	mov 	r0, r6
-	//smlabt	r6, r5, r6, r4
-	//smlawt	r7, r2, r4, r3
-	//smulbt	r7, r5, r7
-	//add		r7, r4, r7, lsl#16
-	//pkhbt	r0, r6, r7
-	pop		{r4-r11,pc}
-//위에는 테스트 코드 아래가 메인 ntt.s 코드
-
 
 //내가 만든 마지막 layer CT butterfly
 /*
@@ -80,8 +16,7 @@ instruction_test2:
 */
 .macro last_layer_butterfly_plant a, twiddle, tmp, q, qa
 	smulwt \tmp, \twiddle, \a		//a의 상위 16-bit에 우측항이 저장되어있으므로, smulwt을 활용하여 상위 16-bit와 zetas를 곱해줌
-	smlabb \tmp, \tmp, \q, \qa
-	//위의 연산까지 하고 tmp의 상위 16-bit를 가져와서 a의 LSB와는 더해주고, a의 MSB와는 뺄셈을 수행
+	smlabb \tmp, \tmp, \q, \qa		//위의 연산까지 하고 tmp의 상위 16-bit를 가져와서 a의 LSB와는 더해주고, a의 MSB와는 뺄셈을 수행
 .endm
 
 .macro last_layer_doublebutterfly_plant a0, a1, twiddle0, twiddle1, tmp, tmp2, q, qa

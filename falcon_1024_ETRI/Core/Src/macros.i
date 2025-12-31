@@ -53,17 +53,6 @@
   str.w \a2, [\a], \mem2
 .endm
 
-.macro doublebarrett a, tmp, tmp2, q, barrettconst
-  smulbb \tmp, \a, \barrettconst
-  smultb \tmp2, \a, \barrettconst
-  asr \tmp, \tmp, #26
-  asr \tmp2, \tmp2, #26
-  smulbb \tmp, \tmp, \q
-  smulbb \tmp2, \tmp2, \q
-  pkhbt \tmp, \tmp, \tmp2, lsl#16
-  usub16 \a, \a, \tmp
-.endm
-
 .macro doublebarrett_fast a, tmp, tmp2, q, barrettconst1, barrettconst2
   smlawb \tmp, \barrettconst1, \a, \barrettconst2
   smlabt \tmp, \q, \tmp, \a
@@ -73,13 +62,6 @@
   pkhbt  \a, \tmp, \tmp2
 .endm
 
-/**
-	@brief 16-bit ��� 8���� ���� barrett ���� ����
-	@param	poly0-poly3	16-bit ����� 2�� packing�� 32-bit ��������
-	@param	barrettconst	imporved barrett ���꿡 �ʿ��� ��� 2��
-	@param	tmp, tmp2		���� �߰��� ������ ���� tmp, tmp2
-	@param	q				falcon q
-*/
 .macro half_barrett poly0, poly1, poly2, poly3, barrettconst, barrettconst2, tmp, tmp2, q
   doublebarrett_fast \poly0, \tmp, \tmp2, \q, \barrettconst, \barrettconst2
   doublebarrett_fast \poly1, \tmp, \tmp2, \q, \barrettconst, \barrettconst2
@@ -115,14 +97,6 @@
   pkhtb		\a0, \tmp2, \tmp, asr#16
 .endm
 
-/**
-	@brief ct buttefly�� �����׿� zetas�� ���ϴ� �Լ�
-	@param a		16-bit ��� 2���� packing�Ǿ� �ִ� 32-bit register
-	@param twiddle	packing�� 16-bit ����� ���� ������ 32-bit zetas register
-	@param tmp		���� ������ �ʿ��� tmp register
-	@param q		plantard multiplication ������ ���Ǵ� q
-	@param qa		plantard multiplication ������ ���Ǵ� q*q
-*/
 .macro mul_twiddle_plant a, twiddle, tmp, q, qa
 	smulwb \tmp, \twiddle, \a
 	smulwt \a,   \twiddle, \a
@@ -139,18 +113,9 @@
 	pkhtb \dst, \src, \tmp, asr#16
 .endm
 
-/**
-	@brief ct buttefly�� �����׿� zetas�� ���ϴ� �Լ�
-	@param a		16-bit ��� 2���� packing�Ǿ� �ִ� 32-bit register
-	@param twiddle1	packing�� 16-bit ����� ���� 16-bit�� ������ 32-bit zetas register
-	@param twiddle2	packing�� 16-bit ����� ���� 16-bit�� ������ 32-bit zetas register
-	@param tmp		���� ������ �ʿ��� tmp register
-	@param q		plantard multiplication ������ ���Ǵ� q
-	@param qa		plantard multiplication ������ ���Ǵ� q*q
-*/
 .macro mul_twiddle_plant2 a, twiddle1, twiddle2, tmp, q, qa
-	smulwb \tmp, \twiddle1, \a		//���� 16-bit
-	smulwt \a,   \twiddle2, \a		//���� 16-bit
+	smulwb \tmp, \twiddle1, \a
+	smulwt \a,   \twiddle2, \a
 	smlabb \tmp, \tmp, \q, \qa
 	smlabb \a, \a, \q, \qa
 	pkhtb \a, \a, \tmp, asr#16
