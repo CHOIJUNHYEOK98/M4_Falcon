@@ -1,0 +1,12 @@
+# ripgrep 검색 제외 — 토큰·시간 절감
+archive/
+
+# 빌드 산출물
+build/
+obj/
+obj-*/
+bin/
+bin-*/
+*.o
+*.d
+*.su
